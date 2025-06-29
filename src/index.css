@@ -1,15 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-  @apply bg-brand-primary text-white;
-}
-
-.btn {
-  @apply py-2 px-4 rounded-md font-bold transition-all duration-300;
-}
-
-.btn-primary {
-  @apply bg-brand-accent text-white hover:bg-blue-500;
-}

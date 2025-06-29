@@ -1,13 +1,21 @@
-// src/components/Extract.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '../api'; // Impor base URL
+import { API_BASE_URL } from '../api';
 
 const Extract = () => {
   const [stegoImage, setStegoImage] = useState(null);
   const [secretText, setSecretText] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setStegoImage(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleExtract = async () => {
     if (!stegoImage) {
@@ -23,7 +31,6 @@ const Extract = () => {
     formData.append('stego_image', stegoImage);
 
     try {
-      // Gunakan base URL yang sudah diimpor
       const response = await axios.post(`${API_BASE_URL}/extract-text/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -39,32 +46,31 @@ const Extract = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-700 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4 text-white">Ekstrak Teks</h2>
-      <div className="mb-4">
-        <label htmlFor="stegoImage" className="block text-white mb-2">Pilih Gambar Steganografi</label>
-        <input
-          type="file"
-          id="stegoImage"
-          accept="image/*"
-          onChange={(e) => setStegoImage(e.target.files[0])}
-          className="w-full text-white"
-        />
-      </div>
-      <button
-        onClick={handleExtract}
-        disabled={loading}
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-      >
-        {loading ? 'Mengekstrak...' : 'Ekstrak'}
-      </button>
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {secretText !== null && (
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold text-white">Teks Rahasia:</h3>
-          <p className="text-white bg-gray-800 p-2 rounded">{secretText}</p>
+    <div className="card w-full bg-base-100 shadow-xl">
+      <div className="card-body">
+        <h2 className="card-title">Ekstrak Teks</h2>
+        {preview && <img src={preview} alt="Preview" className="rounded-lg max-h-64 object-contain mx-auto" />}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Pilih Gambar Steganografi</span>
+          </label>
+          <input type="file" className="file-input file-input-bordered w-full" accept="image/*" onChange={handleImageChange} />
         </div>
-      )}
+        <div className="card-actions justify-end">
+          <button onClick={handleExtract} disabled={loading} className="btn btn-primary">
+            {loading ? <span className="loading loading-spinner"></span> : 'Ekstrak'}
+          </button>
+        </div>
+        {error && <div className="alert alert-error mt-4">{error}</div>}
+        {secretText !== null && (
+          <div className="alert alert-success mt-4">
+            <div>
+              <h3 className="font-bold">Teks Rahasia:</h3>
+              <p>{secretText}</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
