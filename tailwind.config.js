@@ -9,6 +9,11 @@ export default {
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },
+      colors: {
+        'brand-primary': '#1a202c',
+        'brand-secondary': '#2d3748',
+        'brand-accent': '#4299e1',
+      }
     },
   },
   plugins: [],
